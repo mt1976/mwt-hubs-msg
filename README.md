@@ -1,9 +1,8 @@
-# proteushub
+# mwt-hubs-message
 ## Description
-* Tiny go app that queries my docker containers and reports active applications.
-* Requires GO, MDB, docker engine api (See https://pkg.go.dev/github.com/docker/docker/cliente) & https://docs.docker.com/engine/api/
-* Also allows an external /configs folder with connection details + extra entries (json format???) 
-* Allow user to define alternate icon image
+* Tiny go app that displays a message
+* Screen refreshes at a defined interval
+
 
 ---
 ## Badges
