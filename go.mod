@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/davecgh/go-spew v1.1.1
-	github.com/docker/docker v20.10.21+incompatible
+	github.com/docker/docker v20.10.24+incompatible
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gomarkdown/markdown v0.0.0-20221013030248-663e2500819c
 	github.com/mitchellh/go-ps v1.0.0
