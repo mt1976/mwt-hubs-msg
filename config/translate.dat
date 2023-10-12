@@ -61,3 +61,6 @@ dead=Dead
 connecting=Connecting...
 connected=Connected
 listening=Listening
+application.name=Application Name
+application.version=Application Version
+status.image=Image
