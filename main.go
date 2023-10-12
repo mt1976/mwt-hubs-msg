@@ -19,12 +19,16 @@ import (
 	"github.com/toqueteos/webbrowser"
 
 	human "github.com/dustin/go-humanize"
-	xenv "github.com/mt1976/appFrame/environment"
-	xlog "github.com/mt1976/appFrame/logs"
+	xdl "github.com/mt1976/appFrame/dataloader"
+	xenv "github.com/mt1976/appFrame/config"
+	xlg "github.com/mt1976/appFrame/logs"
 	xsys "github.com/mt1976/appFrame/system"
-	xtl "github.com/mt1976/appFrame/translate"
 	"github.com/shirou/gopsutil/disk"
 )
+
+// Define the global helper functions
+var L xlg.XLogger
+var T *xdl.Payload
 
 type PageData struct {
 	AppName string
@@ -71,20 +75,28 @@ type CPUInfo struct {
 	CPUs   string
 }
 
-func main() {
+func init() {
+	fmt.Println("Initialising - Proteus Hub")
+	L = xlg.New()
+	T = xdl.New("translate", "dat", "")
+	T.Verbose()
+	fmt.Println("Initialising - Proteus Hub - Complete")
+}
 
-	xlog.Info(xtl.Get("Starting"))
+func main() {
+	fmt.Println("Starting - Proteus Hub")
+	L.Info(T.Get("Starting"))
 	//fmt.Println("hello world")
 	//test, _ := app.GetEnvironment()
 
-	//xlog.Info("Proteus Hub")
+	//L.Info("Proteus Hub")
 
 	xenv.Debug()
 
 	spew.Dump(xenv.ApplicationName())
-	xlog.Info(xtl.Get("Application Name") + ": " + xenv.ApplicationName())
-	xlog.Info(xtl.Get("Application Version") + ": " + xenv.Name())
-	xlog.Info(xtl.Get("Application Test") + ": " + xenv.GetOverride("", "transmission-1", "port"))
+	L.Info(T.Get("Application Name") + ": " + xenv.ApplicationName())
+	L.Info(T.Get("Application Version") + ": " + xenv.Name())
+	L.Info(T.Get("Application Test") + ": " + xenv.GetOverride("", "transmission-1", "port"))
 	// Setup Endpoints
 	mux := http.NewServeMux()
 	// At least one "mux" handler is required - Dont remove this
@@ -95,11 +107,11 @@ func main() {
 	mux.HandleFunc("/", PageDisplay)
 
 	listenON := xenv.Protocol() + "://" + xenv.URI() + ":" + xenv.Port()
-	xlog.WithField("URI", listenON).Info(xtl.Get("Listening"))
+	L.WithField("URI", listenON).Info(T.Get("Listening"))
 	//log.Info("Listening...")
 	webbrowser.Open(listenON)
 	listenPort := xenv.Port()
-	xlog.Fatal(http.ListenAndServe(":"+listenPort, mux))
+	L.Fatal(http.ListenAndServe(":"+listenPort, mux))
 
 }
 
@@ -115,7 +127,7 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 
 	dhost := xenv.DockerProtocol() + "://" + xenv.DockerURI() + ":" + xenv.DockerPort()
 
-	xlog.WithField(xtl.Get("Host"), dhost).Info(xtl.Get("Connecting"))
+	L.WithField(T.Get("Host"), dhost).Info(T.Get("Connecting"))
 
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -127,7 +139,7 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 		panic(err)
 	}
 
-	xlog.WithField(xtl.Get("Host"), dhost).Info(xtl.Get("Connected"))
+	L.WithField(T.Get("Host"), dhost).Info(T.Get("Connected"))
 
 	thisPage := PageData{}
 	thisPage.AppName = xenv.ApplicationName()
@@ -171,28 +183,28 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 		switch container.State {
 		case "running":
 			thisApp.Badge = "success"
-			thisApp.BadgeContent = xtl.Get("Running")
+			thisApp.BadgeContent = T.Get("Running")
 		case "exited":
 			thisApp.Badge = "danger"
-			thisApp.BadgeContent = xtl.Get("Exited")
+			thisApp.BadgeContent = T.Get("Exited")
 		case "created":
 			thisApp.Badge = "warning"
-			thisApp.BadgeContent = xtl.Get("Created")
+			thisApp.BadgeContent = T.Get("Created")
 		case "paused":
 			thisApp.Badge = "info"
-			thisApp.BadgeContent = xtl.Get("Paused")
+			thisApp.BadgeContent = T.Get("Paused")
 		case "restarting":
 			thisApp.Badge = "info"
-			thisApp.BadgeContent = xtl.Get("Restarting")
+			thisApp.BadgeContent = T.Get("Restarting")
 		case "removing":
 			thisApp.Badge = "info"
-			thisApp.BadgeContent = xtl.Get("Removing")
+			thisApp.BadgeContent = T.Get("Removing")
 		case "dead":
 			thisApp.Badge = "danger"
-			thisApp.BadgeContent = xtl.Get("Dead")
+			thisApp.BadgeContent = T.Get("Dead")
 		default:
 			thisApp.Badge = "dark"
-			thisApp.BadgeContent = xtl.Get("Unknown")
+			thisApp.BadgeContent = T.Get("Unknown")
 		}
 
 		noPorts := len(container.Ports)
@@ -273,7 +285,7 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 func systemInfoGet() xsys.SystemInfo {
 	thisSystem := xsys.Get()
 
-	xlog.WithFields(xlog.Fields{xtl.Get("Hostname"): thisSystem.Hostname, xtl.Get("OS"): thisSystem.OS, xtl.Get("Arch"): thisSystem.Arch, xtl.Get("Uptime"): thisSystem.Uptime}).Info(xtl.Get("System"))
+	L.WithFields(xlg.Fields{T.Get("Hostname"): thisSystem.Hostname, T.Get("OS"): thisSystem.OS, T.Get("Arch"): thisSystem.Arch, T.Get("Uptime"): thisSystem.Uptime}).Info(T.Get("System"))
 
 	//spew.Dump(thisSystem)
 	return thisSystem
@@ -314,7 +326,7 @@ func storageDeviceInfoGet() []DeviceInfo {
 		info.HumanFree = human.Bytes(s.Free)
 
 		rtnVal = append(rtnVal, info)
-		xlog.WithFields(xlog.Fields{xtl.Get("mountpoint"): info.Mountpoint, xtl.Get("percent"): info.HumanPercent, xtl.Get("used"): info.HumanUsed, xtl.Get("free"): info.HumanFree, xtl.Get("total"): info.HumanTotal}).Info(xtl.Get("Device"))
+		L.WithFields(xlg.Fields{T.Get("mountpoint"): info.Mountpoint, T.Get("percent"): info.HumanPercent, T.Get("used"): info.HumanUsed, T.Get("free"): info.HumanFree, T.Get("total"): info.HumanTotal}).Info(T.Get("Device"))
 	}
 	return rtnVal
 }
@@ -361,7 +373,7 @@ func serviceInfoGet(inName string) (App, error) {
 			newApp.BadgeContent = pStatus
 		} else {
 			newApp.Badge = "dark"
-			newApp.BadgeContent = xtl.Get("Not Running")
+			newApp.BadgeContent = T.Get("Not Running")
 		}
 	}
 
@@ -406,17 +418,17 @@ func serviceInfoLog(i int, thisApp App) {
 		aURI = thisApp.Launchers[lchr].AppURI
 		aPort = thisApp.Launchers[lchr].Port
 	}
-	xlog.WithFields(xlog.Fields{
-		xtl.Get("index"):     i,
-		xtl.Get("name"):      thisApp.Instance,
-		xtl.Get("app"):       thisApp.Name,
-		xtl.Get("launchers"): len(thisApp.Launchers),
-		xtl.Get("uri"):       aURI,
-		xtl.Get("port"):      aPort,
-		xtl.Get("Status"):    thisApp.BadgeContent,
-		xtl.Get("State"):     thisApp.Message,
-		xtl.Get("Version"):   thisApp.Version,
-		xtl.Get("Icon"):      thisApp.IconFileName}).Info(xtl.Get("Service"))
+	L.WithFields(xlg.Fields{
+		T.Get("index"):     i,
+		T.Get("name"):      thisApp.Instance,
+		T.Get("app"):       thisApp.Name,
+		T.Get("launchers"): len(thisApp.Launchers),
+		T.Get("uri"):       aURI,
+		T.Get("port"):      aPort,
+		T.Get("Status"):    thisApp.BadgeContent,
+		T.Get("State"):     thisApp.Message,
+		T.Get("Version"):   thisApp.Version,
+		T.Get("Icon"):      thisApp.IconFileName}).Info(T.Get("Service"))
 }
 
 func processFindByName(inProcessName string) (int, error) {
@@ -440,8 +452,8 @@ func processStatusGet(inProcessName string) (string, error) {
 
 	_, err := processFindByName(inProcessName)
 	if err != nil {
-		return xtl.Get("Unknown"), nil
+		return T.Get("Unknown"), nil
 	} // end if
 
-	return xtl.Get("Running"), nil
+	return T.Get("Running"), nil
 }
