@@ -17,3 +17,4 @@ rsrc_windows_amd64.syso
 rsrc_windows_386.syso
 .DS_Store
 assets/.DS_Store
+*.log

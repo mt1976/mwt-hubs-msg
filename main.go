@@ -19,8 +19,8 @@ import (
 	"github.com/toqueteos/webbrowser"
 
 	human "github.com/dustin/go-humanize"
-	xdl "github.com/mt1976/appFrame/dataloader"
 	xenv "github.com/mt1976/appFrame/config"
+	xdl "github.com/mt1976/appFrame/dataloader"
 	xlg "github.com/mt1976/appFrame/logs"
 	xsys "github.com/mt1976/appFrame/system"
 	"github.com/shirou/gopsutil/disk"
@@ -29,6 +29,9 @@ import (
 // Define the global helper functions
 var L xlg.XLogger
 var T *xdl.Payload
+var S *xdl.Payload
+var O *xdl.Payload
+var X *xdl.Payload
 
 type PageData struct {
 	AppName string
@@ -38,19 +41,30 @@ type PageData struct {
 }
 
 type App struct {
-	Name            string
-	DescriptionFull string
-	Description     string
-	Badge           string
-	BadgeContent    string
-	Message         string
-	Launchers       []Launcher
-	Instance        string
-	IconPath        string
-	Version         string
-	Display         string
-	IconFileName    string
+	Name               string
+	DescriptionFull    string
+	Description        string
+	Badge              string
+	BadgeContent       string
+	Message            string
+	Launchers          []Launcher
+	Instance           string
+	IconPath           string
+	Version            string
+	Display            string
+	IconFileName       string
+	URI                string
+	Port               string
+	Protocol           string
+	QualifiedURI       string
+	DockerQualifiedURI string
+	DockerURI          string
+	DockerPort         string
+	DockerProtocol     string
+	Template           string
 }
+
+var Appl App
 
 type Launcher struct {
 	Name   string
@@ -80,7 +94,27 @@ func init() {
 	L = xlg.New()
 	T = xdl.New("translate", "dat", "")
 	T.Verbose()
+	S = xdl.New("system", "env", "")
+	S.Verbose()
 	fmt.Println("Initialising - Proteus Hub - Complete")
+	O = xdl.New("override", "cfg", "")
+	O.Verbose()
+	X = xdl.New("extra", "cfg", "")
+	X.Verbose()
+	Appl = App{}
+	// Load the Appl Data
+	Appl.Name = S.Get("appName")
+	Appl.Version = S.Get("appVersion")
+	Appl.URI = S.Get("appURI")
+	Appl.Port = S.Get("appPort")
+	Appl.Protocol = S.Get("appProtocol")
+	Appl.QualifiedURI = Appl.Protocol + "://" + Appl.URI + ":" + Appl.Port
+	Appl.DockerURI = S.Get("DockerURI")
+	Appl.DockerPort = S.Get("DockerPort")
+	Appl.DockerProtocol = S.Get("DockerProtocol")
+	Appl.DockerQualifiedURI = Appl.DockerProtocol + "://" + Appl.DockerURI + ":" + Appl.DockerPort
+	Appl.Template = S.Get("appTemplate")
+
 }
 
 func main() {
@@ -91,12 +125,15 @@ func main() {
 
 	//L.Info("Proteus Hub")
 
-	xenv.Debug()
+	xenv.Debug(*S)
+	xenv.Debug(*T)
+	xenv.Debug(*O)
+	xenv.Debug(*X)
+	spew.Dump(Appl)
 
-	spew.Dump(xenv.ApplicationName())
-	L.Info(T.Get("Application Name") + ": " + xenv.ApplicationName())
-	L.Info(T.Get("Application Version") + ": " + xenv.Name())
-	L.Info(T.Get("Application Test") + ": " + xenv.GetOverride("", "transmission-1", "port"))
+	L.Info(T.Get("Application Name") + ": " + Appl.Name)
+	L.Info(T.Get("Application Version") + ": " + Appl.Version)
+
 	// Setup Endpoints
 	mux := http.NewServeMux()
 	// At least one "mux" handler is required - Dont remove this
@@ -105,13 +142,15 @@ func main() {
 
 	//mux.HandleFunc("/", TestPage)
 	mux.HandleFunc("/", PageDisplay)
+	//mux.HandleFunc("/setup", SetUpPage)
 
-	listenON := xenv.Protocol() + "://" + xenv.URI() + ":" + xenv.Port()
-	L.WithField("URI", listenON).Info(T.Get("Listening"))
-	//log.Info("Listening...")
-	webbrowser.Open(listenON)
-	listenPort := xenv.Port()
-	L.Fatal(http.ListenAndServe(":"+listenPort, mux))
+	//listenON := Appl.Protocol + "://" + Appl.URI + ":" + Appl.Port + "/"
+
+	L.WithField("URI", Appl.QualifiedURI).Info(T.Get("Listening"))
+
+	webbrowser.Open(Appl.QualifiedURI)
+
+	L.Fatal(http.ListenAndServe(":"+Appl.Port, mux))
 
 }
 
@@ -121,13 +160,7 @@ func handlerAssests(w http.ResponseWriter, r *http.Request) {
 
 func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 
-	//fmt.Fprintf(w, "Hello, there\n")
-
-	xenv.Refresh()
-
-	dhost := xenv.DockerProtocol() + "://" + xenv.DockerURI() + ":" + xenv.DockerPort()
-
-	L.WithField(T.Get("Host"), dhost).Info(T.Get("Connecting"))
+	L.WithField(T.Get("Host"), Appl.DockerQualifiedURI).Info(T.Get("Connecting"))
 
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -139,13 +172,10 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 		panic(err)
 	}
 
-	L.WithField(T.Get("Host"), dhost).Info(T.Get("Connected"))
+	L.WithField(T.Get("Host"), Appl.DockerQualifiedURI).Info(T.Get("Connected"))
 
 	thisPage := PageData{}
-	thisPage.AppName = xenv.ApplicationName()
-
-	//extensions := parser.CommonExtensions | parser.AutoHeadingIDs
-	//parser := parser.NewWithExtensions(extensions)
+	thisPage.AppName = Appl.Name
 
 	//log.Info("Containers List")
 	for _, container := range containers {
@@ -159,18 +189,27 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 		thisApp.Instance = container.Names[0][1:]
 		//log.Infoln("Processing: /" + thisApp.Instance + "/")
 		//if thisApp.Name == "" {
-		thisApp.Name = xenv.GetOverride(thisApp.Name, thisApp.Instance, "name")
+		//thisApp.Name = xenv.GetOverride(thisApp.Name, thisApp.Instance, "name")
+		thisApp.Name, err = O.GetStringofCategory(thisApp.Name, "name")
+		if err != nil {
+			panic(err)
+		}
 		//}
 
 		//	thisApp.Name = getOVRvalue(app.ENV.AppPROTOCOL, thisApp.Instance, "name")
-		skip := xenv.GetOverride("false", thisApp.Instance, "hide")
+		//skip := xenv.GetOverride("false", thisApp.Instance, "hide")
+		skip, _ := O.GetBoolofCategory(thisApp.Instance, "hide")
 		//log.WithFields(log.Fields{"name": thisApp.Name, "instance": thisApp.Instance, "skip": skip}).Info("Skip Test: ")
-		if skip == "true" {
+		if skip {
 			continue
 		}
 		data := container.Labels["org.opencontainers.image.description"]
-		op := serviceHTMLDescriptionGet(xenv.GetExtra(data, thisApp.Instance, "description"))
-
+		//op := serviceHTMLDescriptionGet(X.GetValue(data, thisApp.Instance, "description"))
+		desc := X.GetValue(thisApp.Instance, "description")
+		if desc == "" {
+			desc = data
+		}
+		op := serviceHTMLDescriptionGet(desc)
 		//log.WithField("op", string(op)).Info("Processing: " + "MD")
 		//log.Info("Processing: " + "MD END")
 		thisApp.DescriptionFull = op
@@ -215,11 +254,15 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 			nL := Launcher{}
 			nL.Name = container.Labels["org.opencontainers.image.title"]
 			if nL.Name == "" {
-				nL.Name = xenv.GetOverride(xenv.Protocol(), thisApp.Instance, "name")
+				nL.Name = X.GetValue(thisApp.Instance, "name")
+				//xenv.GetOverride(xenv.Protocol(), thisApp.Instance, "name")
 			}
-			pc := xenv.GetOverride(xenv.Protocol(), thisApp.Instance, "protocol")
-
-			nL.AppURI = pc + "://" + xenv.URI() + ":" + strconv.Itoa(int(container.Ports[i].PublicPort)) + "/"
+			ptcl := X.GetValue(thisApp.Instance, "protocol")
+			pc := Appl.Protocol
+			if ptcl != "" {
+				pc = ptcl
+			}
+			nL.AppURI = pc + "://" + Appl.URI + ":" + strconv.Itoa(int(container.Ports[i].PublicPort)) + "/"
 			nL.Port = strconv.Itoa(int(container.Ports[i].PublicPort))
 			addPort, err := servicePortValidate(thisApp.Instance, nL.Port)
 			if err != nil {
@@ -233,19 +276,23 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 		//spew.Dump(thisApp)
 		thisPage.Apps = append(thisPage.Apps, thisApp)
 	}
-
-	if xenv.AdditionalServices() {
+	additionalServices, _ := S.GetBool("additionalServices")
+	if additionalServices {
 		//log.Info("Adding Additional Services")
 		//noSvc := len(app.ENV.AdditionalServicesList)
 		//fmt.Printf("noSvc: %v\n", noSvc)
 		//fmt.Printf("app.ENV.AdditionalServicesList: %v\n", app.ENV.AdditionalServicesList)
-		for _, v := range xenv.AdditionalServicesList() {
+
+		additionalServicesList, _ := S.GetList("additionalServicesList")
+
+		for _, v := range additionalServicesList {
 			//		log.WithFields(log.Fields{"index": i, "name": v}).Info(app.TextGet("Service"))
 
 			//	thisApp.Name = getOVRvalue(app.ENV.AppPROTOCOL, thisApp.Instance, "name")
-			skip := xenv.GetOverride("false", v, "hide")
+
+			skip, _ := O.GetBoolofCategory(v, "hide")
 			//log.WithFields(log.Fields{"name": v, "instance": v, "skip": skip}).Info(app.TextGet("Skip"))
-			if skip == "true" {
+			if skip {
 				continue
 			}
 
@@ -274,7 +321,7 @@ func PageDisplay(w http.ResponseWriter, _ *http.Request) {
 
 	//fmt.Printf("getSystemInfo(): %v\n", systemInfoGet())
 
-	tmplName := "html/" + xenv.Template() + ".html"
+	tmplName := "html/" + Appl.Template + ".html"
 
 	t := template.Must(template.ParseFiles(tmplName)) // Create a template.
 	//	t, _ = t.ParseFiles("html/"+app.ENV.AppTemplate+".html", nil) // Parse template file.
@@ -340,7 +387,8 @@ func serviceHTMLDescriptionGet(data string) string {
 
 func servicePortValidate(inInstance string, inPort string) (bool, error) {
 	//log.WithFields(log.Fields{"instance": inInstance, "port": inPort}).Info("Checking Port Validity")
-	test := xenv.GetOverride("", inInstance, "port")
+	test := O.GetValue(inInstance, "port")
+	//xenv.GetOverride("", inInstance, "port")
 	//app.OVR[inInstance+"ports"]
 	//fmt.Printf("test: %v\n", test)
 	if test == inPort {
@@ -356,16 +404,16 @@ func serviceInfoGet(inName string) (App, error) {
 
 	newApp := App{}
 	//x := newFunction(inName,"name")
-	newApp.Name = xenv.GetExtra(inName, inName, "name")
-	newApp.Instance = xenv.GetExtra(inName, inName, "instance")
-	op := serviceHTMLDescriptionGet(xenv.GetExtra("descr", inName, "description"))
+	newApp.Name = X.GetValue(inName, "name")
+	newApp.Instance = X.GetValue(inName, "instance")
+	op := serviceHTMLDescriptionGet(X.GetValue(inName, "description"))
 	newApp.Description = op
 	newApp.DescriptionFull = op
 
-	newApp.Badge = xenv.GetExtra("info", inName, "badge")
-	newApp.BadgeContent = xenv.GetExtra("Unknown", inName, "badgeContent")
+	newApp.Badge = X.GetValue(inName, "badge")
+	newApp.BadgeContent = X.GetValue(inName, "badgeContent")
 
-	pName := xenv.GetExtra("", inName, "processname")
+	pName := X.GetValue(inName, "processname")
 	if pName != "" {
 		pStatus, _ := processStatusGet(pName)
 		if pStatus != "" {
@@ -377,14 +425,14 @@ func serviceInfoGet(inName string) (App, error) {
 		}
 	}
 
-	newURI := xenv.GetExtra("http", inName, "protocol") + "://" + xenv.GetExtra("127.0.0.1", inName, "ip") + ":" + xenv.GetExtra("", inName, "port") + "/"
-	uriPath := xenv.GetExtra("", inName, "path")
+	newURI := X.GetValue(inName, "protocol") + "://" + X.GetValue(inName, "ip") + ":" + X.GetValue(inName, "port") + "/"
+	uriPath := X.GetValue(inName, "path")
 	if uriPath != "" {
 		newURI = newURI + uriPath
 	}
 
-	newApp.Launchers = append(newApp.Launchers, Launcher{Name: newApp.Name, AppURI: newURI, Port: xenv.GetExtra("", inName, "port")})
-	newApp.Message = xenv.GetExtra("-", inName, "message")
+	newApp.Launchers = append(newApp.Launchers, Launcher{Name: newApp.Name, AppURI: newURI, Port: X.GetValue(inName, "port")})
+	newApp.Message = X.GetValue(inName, "message")
 	newApp.Display, newApp.IconFileName = serviceFaviconHTMLGet(newApp)
 	//newApp.IconFileName
 	serviceInfoLog(0, newApp)
