@@ -60,6 +60,21 @@ body {
 }
 */
 
+.header-text{
+    font-family: 'Pacifico', cursive;
+    text-align: center;
+}
 
+.icon{
+    width: 49px;
+    height: 49px;
+    margin-right: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
 
-
+.hdr{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

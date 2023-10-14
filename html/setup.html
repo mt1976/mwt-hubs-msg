@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<head>
+  <!-- FAVICON START -->
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- FAVICON ENDS -->
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1,
+        shrink-to-fit=y"
+  />
+  <meta charset="utf-8" />
+  <!-- <meta http-equiv="refresh" content="30" />-->
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
+  />
+  <!-- Google Fonts Roboto -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/assets/css/mdb.dark.min.css" />
+  <link rel="stylesheet" href="/assets/login.css" />
+
+  <title>{{.AppName}}</title>
+
+  <!-- ADDITION STYLES IN SPECIFIC INSTANCES -->
+</head>
+<body class="">
+  <!--Hey! This is the original version of Simple CSS Waves-->
+  <!-- Heading -->
+  <div class="display-4 p-4 hdr">
+    <img src="/assets/icon-192.png" alt="whiteboard application icon" class="me-2 icon"><span class="header-text me-2">{{.AppName}}</span><img src="/assets/icon-192.png" alt="whiteboard application icon" class="me-2 icon">
+  </div>
+
+  <!-- Heading Ends-->
+  <!--Main Form-->
+
+  <div class="card ms-4 me-4">
+    <div class="card-header text-center">
+      <div class="display-6 p-6">
+        <div class="align-left">
+          &nbsp;&nbsp;<i class="fas fa-cogs fa-fw me-2"></i>Setup
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form action="/" method="POST" class="">
+        <!-- MOOD -->
+        <div class="row mb-3">
+          <div class="col">Select Mood</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <select class="select" data-mdb-filter="true">
+              <option
+                value="1"
+                data-mdb-icon="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-1.webp"
+              >
+                One
+              </option>
+              <option
+                value="2"
+                data-mdb-icon="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp"
+                selected
+              >
+                Two
+              </option>
+              <option
+                value="3"
+                data-mdb-icon="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-3.webp"
+              >
+                Three
+              </option>
+              <option
+                value="4"
+                data-mdb-icon="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-4.webp"
+              >
+                Four
+              </option>
+              <option
+                value="5"
+                data-mdb-icon="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp"
+              >
+                Five
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mood Ends -->
+        <!-- Message -->
+        <div class="row mb-3">
+          <div class="col"></div>
+        </div>
+        <div class="form-outline mb-3">
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            id="message"
+            name="message"
+            required="required"
+            value="{{.Message}}"
+          />
+          <label class="form-label" for="message"
+            ><i class="fas fa-envelope-open-text me-2 text-application"></i
+            >Message</label
+          >
+        </div>
+        <!-- Message Ends -->
+
+        <!-- Message Notes -->
+        <div class="row mb-3">
+          <div class="col"></div>
+        </div>
+        <div class="form-outline mb-3">
+          <textarea
+            class="form-control form-control-lg"
+            id="notes"
+            name="notes"
+            rows="4"
+          >{{.Notes}}</textarea>
+          <label class="form-label" for="notes"
+            ><i class="fas fa-signature me-2 text-application"></i>Notes</label
+          >
+        </div>
+        <!-- Message Notes Ends -->
+
+        <div class="justify-content-end">
+          <button
+            type="submit"
+            value=""
+            class="btn btn-primary btn-lg ms-3"
+            style="float: right"
+            formaction="/login"
+            method="GET"
+          >
+            <i class="fas fa-save me-2"></i>UPDATE
+          </button>
+          <button
+            type="submit"
+            value=""
+            class="btn btn-secondary btn-lg ms-3"
+            style="float: right"
+            formaction="/"
+            method="PUT"
+          >
+            <i class="fas fa-home me-2"></i>HOME
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MDB -->
+  <script type="text/javascript" src="/assets/js/mdb.min.js"></script>
+  <!-- Custom scripts -->
+  <script type="text/javascript" src="/assets/js/script.js"></script>
+</body>

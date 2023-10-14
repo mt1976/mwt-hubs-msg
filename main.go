@@ -41,7 +41,7 @@ func init() {
 	L = xlg.New()
 	T = xdl.New("translate", "dat", "")
 	T.Verbose()
-	S = xdl.New("system", "env", "")
+	S = xdl.New("application", "cfg", "")
 	S.Verbose()
 
 	fmt.Println("Initialising - Complete")
