@@ -1,56 +1,31 @@
 <!DOCTYPE html>
 <head>
   <!-- FAVICON START -->
-
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-
   <!-- FAVICON ENDS -->
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1,
-        shrink-to-fit=y"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=y" />
   <meta charset="utf-8" />
-  <!-- <meta http-equiv="refresh" content="30" />-->
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
-   <meta http-equiv="refresh" content="{{.Refresh}}" />
+  <meta http-equiv="refresh" content="{{.Refresh}}" />
   <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
-  />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
   <!-- Google Fonts Roboto -->
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-  />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
   <link rel="stylesheet" href="/assets/css/mdb.dark.min.css" />
   <link rel="stylesheet" href="/assets/login.css" />
-
   <title>{{.AppName}}</title>
-
   <!-- ADDITION STYLES IN SPECIFIC INSTANCES -->
 </head>
 <body class="">
   <!--Hey! This is the original version of Simple CSS Waves-->
   <!-- Heading -->
   <div class="display-4 p-4 hdr">
-    <img
-      src="/assets/icon-192.png"
-      alt="whiteboard application icon"
-      class="me-2 icon"
-    /><span class="header-text me-2">{{.AppName}}</span
-    ><img
-      src="/assets/icon-192.png"
-      alt="whiteboard application icon"
-      class="me-2 icon"
-    />
+    <img src="/assets/icon-192.png" alt="whiteboard application icon" class="me-2 icon"/><span class="header-text me-2">{{.AppName}}</span
+    ><img src="/assets/icon-192.png" alt="whiteboard application icon" class="me-2 icon"/>
   </div>
   <!-- Heading Ends-->
   <!------------------------------------------------------------------------------------------------------>
   <!-- BODY STARTS -->
-
   <div class="card ms-4 me-4 p-4">
     <div class="card-body container">
       <div class="row gx-5">
@@ -60,15 +35,12 @@
           </div>
           <div class="row justify-content-center p-3 h5">Matt is {{.Message}}</div>
         </div>
-        {{if .Notes}}
-        <div class="col display-6  note note-light mb-3">{{.Notes}}</div>
-        {{end}}
+        {{if .Notes}}<div class="col display-6  note note-light mb-3">{{.Notes}}</div>{{end}}
       </div>
     </div>
   </div>
   <br><div class="ms-4 text-black-50">{{.DisplayTime}}</div>
   <!-- BODY ENDS -->
-
   <!-- MDB -->
   <script type="text/javascript" src="/assets/js/mdb.min.js"></script>
   <!-- Custom scripts -->

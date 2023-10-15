@@ -149,7 +149,7 @@ func homeHandler(w http.ResponseWriter, _ *http.Request) {
 	thisPage.AppName = C.AppName
 	thisPage.Message = msgData.Data.Get(msgMessage)
 	thisPage.Notes = xstr.MakeStringDisplayable(msgData.Data.Get(msgNotes))
-	thisPage.Image = msgData.Data.Get(msgImage)
+	thisPage.Image = msgData.Data.Get(msgStatus)
 	thisPage.Refresh, _ = getRefreshPeriod()
 	thisPage.DisplayTime = getNow() + " (" + thisPage.Refresh + ")"
 
@@ -211,6 +211,19 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	msgData.Data.Update(msgMessage, r.FormValue(msgMessage))
 	msgData.Data.Update(msgNotes, xstr.MakeStringStorable(r.FormValue(msgNotes)))
 	msgData.Data.Update(msgImage, "placeholder")
+
+	mood := r.FormValue(msgStatus)
+	fmt.Println("Mood: " + mood)
+	fmt.Println("Mood: " + mood)
+	fmt.Println("Mood: " + mood)
+	fmt.Println("Mood: " + mood)
+	fmt.Println("Mood: " + mood)
+
+	msgData.Data.Update(msgStatus, mood)
+
+	if mood == "" {
+		mood = "happy"
+	}
 
 	xtd.Store(msgData)
 

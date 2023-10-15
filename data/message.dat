@@ -1,7 +1,7 @@
+upduser=matttownsend
+updhost=mercury.local
+status=Seven
+image=placeholder
 message=Feeling OK(ish)
 notes=Line1{cr}{lf}Line2{cr}{lf}Line3{cr}{lf}Link4{cr}{lf}Cheese{cr}{lf}On{cr}{lf}<hr>{cr}{lf}Toads <br> noops{cr}{lf}nips
-updtimestamp=20231015@110222
-upduser=matttownsend
-updhost=silicon.local
-status=Two
-image=placeholder
+updtimestamp=20231015@224311
