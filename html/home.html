@@ -14,6 +14,7 @@
   <meta charset="utf-8" />
   <!-- <meta http-equiv="refresh" content="30" />-->
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
+   <meta http-equiv="refresh" content="{{.Refresh}}" />
   <!-- Font Awesome -->
   <link
     rel="stylesheet"
@@ -35,306 +36,38 @@
   <!--Hey! This is the original version of Simple CSS Waves-->
   <!-- Heading -->
   <div class="display-4 p-4 hdr">
-    <img src="/assets/icon-192.png" alt="whiteboard application icon" class="me-2 icon"><span class="header-text me-2">{{.AppName}}</span><img src="/assets/icon-192.png" alt="whiteboard application icon" class="me-2 icon">
+    <img
+      src="/assets/icon-192.png"
+      alt="whiteboard application icon"
+      class="me-2 icon"
+    /><span class="header-text me-2">{{.AppName}}</span
+    ><img
+      src="/assets/icon-192.png"
+      alt="whiteboard application icon"
+      class="me-2 icon"
+    />
   </div>
   <!-- Heading Ends-->
   <!------------------------------------------------------------------------------------------------------>
-  <!-- Tabs navs -->
-  <ul class="nav nav-tabs mb-3" id="mainTable" role="tablist">
-    <li class="nav-item" role="presentation">
-      <a
-        class="nav-link active"
-        id="mainTable-tab-1"
-        data-mdb-toggle="tab"
-        href="#mainTable-tabs-1"
-        role="tab"
-        aria-controls="mainTable-tabs-1"
-        aria-selected="true"
-        ><div class="">
-          <i class="fas fa-cogs fa-fw me-2 "></i>Services
-        </div></a
-      >
-    </li>
+  <!-- BODY STARTS -->
 
-    <li class="nav-item" role="presentation">
-      <a
-        class="nav-link"
-        id="mainTable-tab-2"
-        data-mdb-toggle="tab"
-        href="#mainTable-tabs-2"
-        role="tab"
-        aria-controls="mainTable-tabs-2"
-        aria-selected="false"
-        ><div class="">
-          <i class="far fa-hdd fa-fw me-2 "></i>Devices
-        </div></a
-      >
-    </li>
-    <li class="nav-item" role="presentation">
-      <a
-        class="nav-link"
-        id="mainTable-tab-3"
-        data-mdb-toggle="tab"
-        href="#mainTable-tabs-3"
-        role="tab"
-        aria-controls="mainTable-tabs-3"
-        aria-selected="false"
-        ><div class="">
-          <i class="fas fa-cogs fa-fw me-2 "></i>Other
-        </div></a
-      >
-    </li>
-  </ul>
-  <!-- Tabs navs -->
-  <!------------------------------------------------------------------------------------------------------>
-  <!-- Tabs content -->
-  <div class="tab-content" id="mainTable-content">
-    <!-- Panel 1 Apps -->
-    <div
-      class="tab-pane fade show active"
-      id="mainTable-tabs-1"
-      role="tabpanel"
-      aria-labelledby="mainTable-tab-1"
-    >
-      <div
-        class="row row-cols-1 row-cols-md-6 row-cols-mx-4 g-2"
-        style="
-          z-index: 0;
-          margin-left: 1rem;
-          margin-right: 1rem;
-          padding-bottom: 1rem;
-          padding-top: 0.5rem;
-        "
-      >
-        <!-- Range through Applications -->
-        {{range .Apps}}
+  <div class="card ms-4 me-4 p-4">
+    <div class="card-body container">
+      <div class="row gx-5">
         <div class="col">
-          <!-- Card Begins -->
-          <div
-            class="card"
-            style="padding: 0 !important; min-height: 130px; max-height: 130px"
-          >
-            <div
-              class="card-body d-flex flex-column"
-              style="padding: 0.5rem; min-height: 180px"
-            >
-              <!-- Card Body Begins -->
-              <!-- Row 1 -->
-              <div class="row">
-                <div class="col text-right">
-                  <div class="col">
-                    {{.Display}}<span class=""
-                      >&nbsp&nbsp{{.Name}}</span
-                    >
-                  </div>
-                </div>
-              </div>
-              <!-- Row 2 -->
-              <div class="row mb-2">
-                <div class="col">
-                  <span class="badge badge-{{.Badge}} me-2"
-                    >{{.BadgeContent}}<small>&nbsp;- {{.Message}}</small></span
-                  >
-                </div>
-              </div>
-              <!-- Row 3 -->
-              <div class="row mb-2">
-                <div
-                  class="btn-group shadow-0 align-content-center sticky"
-                  data-sticky-position="bottom"
-                  role="group"
-                  aria-label="Basic example"
-                  class="padding-bottom:0;"
-                >
-                  {{range .Launchers}}
-                    <a href="{{.AppURI}}" class="btn btn-primary float-end btn-sm"><i class="fas fa-external-link-alt me-2"></i>OPEN</a>
-                  {{else}}
-                    <button href="" class="btn btn-primary float-end btn-sm" disabled><i class="fas fa-external-link-alt me-2"></i>OPEN</button>
-                  {{end}}
-                </div>
-              </div>
-              <!-- Card Body Ends -->
-            </div>
-            <!-- Card Ends -->
+          <div class="row justify-content-center">
+            <img src="/assets/status/{{.Image}}.png" alt="{{.Message}}" class="" style="width:25rem;"/>
           </div>
-          <!-- Card Ends -->
+          <div class="row justify-content-center p-3 h5">Matt is {{.Message}}</div>
         </div>
+        {{if .Notes}}
+        <div class="col display-6  note note-light mb-3">{{.Notes}}</div>
         {{end}}
       </div>
     </div>
-    <!-- Panel 1 ENDS -->
-    <!-- Panel 2 Drives-->
-    <div
-      class="tab-pane fade"
-      id="mainTable-tabs-2"
-      role="tabpanel"
-      aria-labelledby="mainTable-tab-2"
-    >
-      <div style="">
-        <div
-          class="row row-cols-1 row-cols-md-6 row-cols-mx-4 g-2"
-          style="
-            z-index: 0;
-            margin-left: 1rem;
-            margin-right: 1rem;
-            padding-bottom: 1rem;
-            padding-top: 0.5rem;
-          "
-        >
-          <!-- Range through Devices -->
-          {{range .Devices}}
-          <div
-            class="card me-2"
-            style="padding: 0 !important; min-height: 130px; max-height: 130px"
-          >
-            <!-- Card Begins -->
-            <div
-              class="card-body d-flex flex-column"
-              style="padding: 0.5rem; min-height: 180px"
-            >
-              <!-- Card Body Begins -->
-              <!-- Row 1 -->
-              <div class="row">
-                <div class="col me-2 text-left ">
-                  <i class="far fa-hdd  me-2"></i>{{.Mountpoint}}
-                </div>
-              </div>
-              <!-- Row 2 -->
-              <div class="row mb-2">
-                <div class="col">
-                  <div class="col progress" style="height: 20px">
-                    <div
-                      class="progress-bar progress-bar-striped progress-bar-animated"
-                      role="progressbar"
-                      aria-valuenow="{{.Percent}}"
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                      style="width: {{.Percent}}%;"
-                    >
-                      {{.HumanPercent}} used
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Row 3 -->
-              <div class="row mb-2">
-                <div class="col  float-right" style="">
-                  <strong>{{.HumanFree}}</strong> free <br /><small
-                    >[{{.HumanUsed}} of {{.HumanTotal}} used]</small
-                  >
-                </div>
-              </div>
-              <!-- Card Body Ends -->
-            </div>
-            <!-- Card Ends -->
-          </div>
-          {{end}}
-        </div>
-      </div>
-    </div>
-    <!-- Panel 2 ends -->
-    <!-- Panel 3 begins-->
-    <div
-      class="tab-pane fade"
-      id="mainTable-tabs-3"
-      role="tabpanel"
-      aria-labelledby="mainTable-tab-3"
-    >
-      <div style="margin-left: 1rem; margin-right: 1rem">
-      
-        <div class="display-6">System</div>
-        <table class="table table-sm">
-        <thead class="">
-          <tr>
-            <th>Hostname</th>
-            <th>OS</th>
-            <th>Architecture</th>
-            <th>Version</th>
-            <th>Uptime</th>
-          </tr>
-          </thead>
-          <tr>
-            <td>{{.System.Hostname}}</td>
-            <td>{{.System.OS}}</td>
-            <td>{{.System.Arch}}</td>
-            <td>{{.System.Kernel}}</td>
-            <td>{{.System.Uptime}}</td>
-          </tr>
-        </table>
-        <br />
-        <div class="display-6">Memory</div>
-        <table class="table table-sm">
-          <tr>
-            <th>Total</th>
-            <th>Used</th>
-            <th>Free</th>
-          </tr>
-          <tr>
-            <td>{{.System.Memory.HumanTotal}}</td>
-            <td>{{.System.Memory.HumanUsed}}</td>
-            <td>{{.System.Memory.HumanFree}}</td>
-          </tr>
-        </table>
-        <br />
-        <div class="display-6">User</div>
-        <table class="table table-sm">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Home Path</th>
-          </tr>
-          <tr>
-            <td>{{.System.UserName}}</td>
-            <td>{{.System.User}}</td>
-            <td>{{.System.UserHome}}</td>
-          </tr>
-        </table>
-        <div class="display-6">Application</div>
-        <table class="table table-sm">
-          <tr>
-            <th>Docker</th>
-            <th>GO Version</th>
-          </tr>
-          <tr>
-            <td>{{.System.Docker}}</td>
-            <td>{{.System.GoVersion}}</td>
-          </tr>
-        </table>
-        <div class="display-6">Other</div>
-        <ul class="list-group list-group-small">
-        <li class="list-group-item text-info">&nbsp{{.System.CpuInfo}}</li>
-        <li class="list-group-item text-info">&nbsp{{.System.GPUInfo}}</li>
-        <li class="list-group-item text-info">&nbsp{{.System.MemoryInfo}}</li>
-        <li class="list-group-item text-info">&nbsp{{.System.BlockInfo}}</li>
-        <li class="list-group-item text-info">&nbsp{{.System.ChassisInfo}}</li>
-        <li class="list-group-item text-info">&nbsp{{.System.BIOSInfo}}</li>
-        <br />
-        </ul>
-        <!-- Panel Ends -->
-      </div>
-    </div>
-    <!-- Panel 3 ends -->
-    <!-- Tabs content Ends-->
   </div>
-  <!--Tabs Content ends-->
-  <!------------------------------------------------------------------------------------------------------>
-
-  <script>
-    $('a[data-toggle="tab"]').click(function (e) {
-      e.preventDefault();
-      $(this).tab("show");
-    });
-
-    $('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
-      var id = $(e.target).attr("href");
-      localStorage.setItem("selectedTab", id);
-    });
-
-    var selectedTab = localStorage.getItem("selectedTab");
-    if (selectedTab != null) {
-      $('a[data-toggle="tab"][href="' + selectedTab + '"]').tab("show");
-    }
-  </script>
+  <br><div class="ms-4 text-black-50">{{.DisplayTime}}</div>
+  <!-- BODY ENDS -->
 
   <!-- MDB -->
   <script type="text/javascript" src="/assets/js/mdb.min.js"></script>

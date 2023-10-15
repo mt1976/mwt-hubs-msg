@@ -1,7 +1,7 @@
-message=Hello There! POO BUM...
-messagebody=This is a test message, please ignore more for now and let me do my own thing.
-updtimestamp=20231014@103846
+message=Feeling OK(ish)
+notes=Line1{cr}{lf}Line2{cr}{lf}Line3{cr}{lf}Link4{cr}{lf}Cheese{cr}{lf}On{cr}{lf}<hr>{cr}{lf}Toads <br> noops{cr}{lf}nips
+updtimestamp=20231015@110222
 upduser=matttownsend
 updhost=silicon.local
-statusselected=happy
-statustext=Matt is Happy
+status=Two
+image=placeholder

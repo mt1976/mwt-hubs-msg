@@ -4,13 +4,14 @@ go 1.21.3
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
-	github.com/mt1976/appFrame v1.2.6
+	github.com/mt1976/appFrame v1.2.7
 	github.com/toqueteos/webbrowser v1.2.0
 )
 
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/galsondor/go-ascii v0.0.0-20151210013816-e2eb5175fb10 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/jaypipes/ghw v0.12.0 // indirect
